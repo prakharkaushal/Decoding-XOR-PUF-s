@@ -59,12 +59,10 @@ def my_decode( w ):
     v_weights = Vt[0, :] * np.sqrt(sigma)
     
     def solve_single_apuf(weights):
-        alpha = np.zeros(32)
+        # w_0 = alpha_0, w_i = alpha_i + beta_{i-1}, w_32 = beta_31 is underdetermined;
+        # fixing beta_0..beta_30 = 0 gives alpha_i = w_i and beta_31 = w_32
+        alpha = weights[:32].copy()
         beta = np.zeros(32)
-
-        alpha[0] = weights[0]
-        for i in range(1, 32):
-            alpha[i] = weights[i]
         beta[31] = weights[32]
 
         diff_pq = alpha + beta
